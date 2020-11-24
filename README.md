@@ -1,2 +1,3 @@
 # P3_Huffman
-Realizar un programa que comprima y descomprima archivos por medio del algoritmo de Huffman.
+
+![alt text](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/ArbolCodigoHuffman.svg/300px-ArbolCodigoHuffman.svg.png)
