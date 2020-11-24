@@ -65,7 +65,7 @@ public class Lista {
         NodoArbol izq = letra1.raiz;
         NodoArbol der = letra2.raiz;
         
-        raiz_combinada.letra = '#';
+        raiz_combinada.letra = '^';
         raiz_combinada.dato = izq.dato + der.dato;
         raiz_combinada.izq = izq;
         raiz_combinada.der = der;

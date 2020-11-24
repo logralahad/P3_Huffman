@@ -15,5 +15,6 @@ public enum Recorrido {
     POSTORDER,
     HOJAS,
     NIVELES,
-    CODIGOS
+    CODIGOS,
+    ESCRIBIR_ARBOL
 }

@@ -35,24 +35,27 @@ public class Main {
        
     public static void Huffman(Lista lista, int modo){        
         try{
-            
-            int[] frecuencias = new int[256];
-            Scanner sc = new Scanner(System.in);
-            System.out.print("\nEscriba la direccion del archivo: ");
-            String direccion = sc.nextLine();
-            
-            File archivo = new File(direccion, "INPUT.TXT");           
-            BufferedReader origen = new BufferedReader(new FileReader(archivo));
-            BufferedReader copia = new BufferedReader(new FileReader(archivo));
-            
-            System.out.print("\nEscriba la direccion donde quiere guardar el archivo: ");
-            String dest_dirr = sc.nextLine();
-            
-            File writer = new File(dest_dirr, "OUTPUT.TXT");
-            FileWriter destino = new FileWriter(writer, false);
-            
-            int byteInfo = 0;
             if(modo == 0){
+                int[] frecuencias = new int[256];
+                Scanner sc = new Scanner(System.in);
+                System.out.println("\nEl archivo debe tener como nombre INPUT");
+                System.out.print("\nEscriba la direccion del archivo: ");
+                String direccion = sc.nextLine();
+
+                File archivo = new File(direccion, "INPUT.TXT");           
+                BufferedReader origen = new BufferedReader(new FileReader(archivo));
+                BufferedReader copia = new BufferedReader(new FileReader(archivo));
+                
+                System.out.println("\nSon 2 archivis: OUTPUT & Tabla.");
+                System.out.print("\nEscriba la direccion donde quiere guardar los archivos: ");
+                String dest_dirr = sc.nextLine();
+
+                File writer = new File(dest_dirr, "OUTPUT.TXT");
+                File writer2 = new File(dest_dirr, "TABLA.TXT");
+                FileWriter destino = new FileWriter(writer, false);
+                FileWriter destino2 = new FileWriter(writer2, false);
+
+                int byteInfo = 0;
                 while( (byteInfo = origen.read()) != EOF){
                     frecuencias[byteInfo]++;
                 }
@@ -69,33 +72,62 @@ public class Main {
                 String[] cosas = groot.codes;
                 while( (byteInfo = copia.read()) != EOF){
                     String code = cosas[byteInfo];
-                    Integer codigo = Integer.parseInt(code);
-                    byte op = codigo.byteValue();
-                    destino.write(op);
+                    destino.write(code);
                 }
                 
-                for(int j = 0; j < 256; ++j){
-                    if(cosas[j] == null) continue;
-                    else{
-                        Integer codigo = Integer.parseInt(cosas[j]);
-                        byte op = codigo.byteValue();
-                        System.out.print(op + " ");
-                        System.out.println((char)j + ": " + cosas[j] + " ");
+                groot.imprimirArbol(destino2);
+                System.out.println("\nArchivo comprimido exitosamente.\nSu archivo esta en " + dest_dirr);
+                origen.close();
+                copia.close();
+                destino.close();
+                destino2.close();
+            }
+            else{
+                Scanner sc = new Scanner(System.in);
+                
+                System.out.println("\nEl texto a descomprimir debe tener como nombre OUTPUT.");
+                System.out.println("La tabla debe tener como nombre TABLA.");
+                System.out.print("\nEscriba la direccion de los archivos: ");
+                String direccion = sc.nextLine();
+
+                File archivo = new File(direccion, "OUTPUT.TXT");           
+                BufferedReader origen = new BufferedReader(new FileReader(archivo));
+                
+                File archivo2 = new File(direccion, "TABLA.TXT");           
+                BufferedReader origen2 = new BufferedReader(new FileReader(archivo2));
+                
+                System.out.print("\nEscriba la direccion donde quiere guardar el archivo: ");
+                String dest_dirr = sc.nextLine();
+
+                File writer = new File(dest_dirr, "DESCOMPRIMIDO.TXT");
+                FileWriter destino = new FileWriter(writer, false);
+                
+                Arbol groot = new Arbol();
+                groot.cargarArbol(origen2);
+                String s = origen.readLine();
+                String ans = "";
+                NodoArbol inicio = groot.raiz;
+                
+                for(int i = 0; i < s.length(); ++i){
+                    if(s.charAt(i) == '0'){
+                        inicio = inicio.izq;
+                    }else{
+                        inicio = inicio.der;
+                    }
+                    
+                    if(inicio.der == null && inicio.izq == null){
+                        ans += inicio.letra;
+                        inicio = groot.raiz;
                     }
                 }
                 
+                destino.write(ans);
+
+                System.out.println("\nArchivo descomprimido exitosamente.\nSu archivo esta en " + dest_dirr);
+                origen.close();
+                origen2.close();
+                destino.close();
             }
-            
-            else{
-                
-                System.out.println("\nArchivo desencriptado exitosamente.\nSu archivo esta en " + dest_dirr);
-            }
-            
-            
-            origen.close();
-            copia.close();
-            destino.close();
-            
         }
         catch(Exception e){
             System.out.println("Hubo un error");

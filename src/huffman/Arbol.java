@@ -5,6 +5,12 @@
  */
 package huffman;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  *
  * @author logra
@@ -67,38 +73,6 @@ public class Arbol{
                 break;
         }
     }
-
-    public void eliminar(int dato){
-        NodoArbol aux = encontrar(raiz, dato);
-        if(aux != null){
-            raiz = eliminarRecur(raiz, dato);
-            System.out.print("\nSe elimino el numero " + dato + "\n");
-        }else{
-            System.out.print("\nNo se elimino el numero " + dato + " porque no existe\n");
-        }
-    }
-    
-    public NodoArbol eliminarRecur(NodoArbol inicio, int dato){
-        if(inicio == null) return inicio;
-        
-        if(dato < inicio.dato){
-            inicio.izq = eliminarRecur(inicio.izq, dato);
-        }else if(dato > inicio.dato){
-            inicio.der = eliminarRecur(inicio.der, dato);
-        }else{
-            if(inicio.izq == null){
-                return inicio.der;
-            }else if(inicio.der == null){
-                return inicio.izq;
-            }
-            
-            NodoArbol aux = minimo(inicio.der);
-            inicio.dato = aux.dato;
-            inicio.der = eliminarRecur(inicio.der, inicio.dato);
-        }
-        
-        return inicio;      
-    }
     
     public NodoArbol minimo(NodoArbol aux){
         while(aux.izq != null){
@@ -128,6 +102,35 @@ public class Arbol{
                 codes[(int)aux.letra] = ruta;
             }
         }
+    }
+    
+    public void imprimirArbol(FileWriter fp) throws IOException{
+        escribirArbol(raiz, fp);
+    }
+    
+    public void escribirArbol(NodoArbol aux, FileWriter fp) throws IOException{
+        if(aux == null){
+            fp.write("#");
+            return;
+        }
+        fp.write(aux.letra);
+        escribirArbol(aux.izq, fp);
+        escribirArbol(aux.der, fp);
+    }
+    
+    public void cargarArbol(BufferedReader fp) throws IOException{
+        raiz = crearArbol(raiz, fp);
+    }
+    
+    public NodoArbol crearArbol(NodoArbol aux, BufferedReader fp) throws IOException{
+        char l = (char)fp.read();
+        if(l == '#' || (int)l == -1){
+            return null;
+        }
+        aux = crearNodo(1, l);
+        aux.izq = crearArbol(aux.izq, fp);
+        aux.der = crearArbol(aux.der, fp);
+        return aux;
     }
        
     public void preOrden(NodoArbol aux){
